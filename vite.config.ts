@@ -11,12 +11,8 @@ export default defineConfig({
         host: '0.0.0.0',
         port: 5173,
         strictPort: true,
-        ws: {
-            protocol: 'wss',
-            host: 'queue-system.test',
-            port: 5173,
-            clientPort: 5174,
-        },
+        cors: true,
+        hmr: false,
     },
     plugins: [
         laravel({
