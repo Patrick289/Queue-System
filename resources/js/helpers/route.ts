@@ -1,4 +1,4 @@
-const modules = import.meta.globEager('../routes/**/index.ts') as Record<string, any>
+const modules = import.meta.glob('../routes/**/index.ts', { eager: true }) as Record<string, any>
 
 function resolveRoute(name: string) {
     const parts = name.split('.')
