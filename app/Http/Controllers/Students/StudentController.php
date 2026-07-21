@@ -28,7 +28,7 @@ class StudentController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:students',
+            'student_number' => ['required', 'string', 'regex:/^\d{6}$/', 'unique:students,student_number'],
             'phone' => 'nullable|string|max:20',
             'department' => 'nullable|string|max:255',
             'program' => 'nullable|string|max:255',
@@ -38,18 +38,14 @@ class StudentController extends Controller
         ]);
 
         // Check for duplicate records
-        $existingStudent = Student::where('email', $validated['email'])
-            ->orWhere('first_name', $validated['first_name'])
+        $existingStudent = Student::where('first_name', $validated['first_name'])
             ->where('last_name', $validated['last_name'])
             ->first();
 
         if ($existingStudent) {
-            return back()->withErrors(['email' => 'Student record already exists.']);
+            return back()->withErrors(['student_number' => 'Student record already exists.']);
         }
 
-        // Generate unique student number
-        $studentNumber = $this->generateStudentNumber();
-        $validated['student_number'] = $studentNumber;
         $validated['is_active'] = true;
 
         Student::create($validated);
@@ -98,10 +94,10 @@ class StudentController extends Controller
             return Inertia::render('Students/Search', ['results' => []]);
         }
 
-        $results = Student::where('student_number', 'ilike', "%$query%")
-            ->orWhere('first_name', 'ilike', "%$query%")
-            ->orWhere('last_name', 'ilike', "%$query%")
-            ->orWhere('email', 'ilike', "%$query%")
+        $results = Student::whereLike('student_number', "%$query%")
+            ->orWhereLike('first_name', "%$query%")
+            ->orWhereLike('last_name', "%$query%")
+            ->orWhereLike('email', "%$query%")
             ->limit(50)
             ->get();
 
@@ -116,13 +112,5 @@ class StudentController extends Controller
         $student->delete();
 
         return redirect()->route('students.index')->with('message', 'Student deleted successfully.');
-    }
-
-    private function generateStudentNumber(): string
-    {
-        $year = now()->year;
-        $count = Student::whereYear('created_at', $year)->count() + 1;
-
-        return sprintf('%d-%06d', $year, $count);
     }
 }

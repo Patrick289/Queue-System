@@ -54,8 +54,8 @@ class DatabaseSeeder extends Seeder
         }
 
         // Create sample queues
-        $registrationQueue = Queue::create([
-            'name' => 'Registration Queue',
+        $registrationQueue = Numbering::create([
+            'name' => 'Registration Numbering',
             'description' => 'Student registration and enrollment queue',
             'max_capacity' => 30,
             'status' => 'active',
