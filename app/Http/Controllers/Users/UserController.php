@@ -9,11 +9,6 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('admin'); // You'll need to create this middleware
-    }
-
     public function index()
     {
         $users = User::paginate(15);

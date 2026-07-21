@@ -1,10 +1,19 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import {
+    Users,
+    Zap,
+    FileText,
+    Settings,
+    BarChart3,
+    Search,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Users, Zap, FileText, Settings, BarChart3, Search } from 'lucide-react';
 import { dashboard } from '@/routes';
 
 export default function Dashboard() {
+    const { auth } = usePage().props;
+    const isAdmin = auth.user?.role === 'admin';
     const menuItems = [
         {
             title: 'Students',
@@ -34,13 +43,17 @@ export default function Dashboard() {
             icon: FileText,
             color: 'bg-orange-100 text-orange-600',
         },
-        {
-            title: 'User Management',
-            description: 'Manage system users and roles',
-            href: route('users.index'),
-            icon: Settings,
-            color: 'bg-red-100 text-red-600',
-        },
+        ...(isAdmin
+            ? [
+                  {
+                      title: 'User Management',
+                      description: 'Manage system users and roles',
+                      href: route('users.index'),
+                      icon: Settings,
+                      color: 'bg-red-100 text-red-600',
+                  },
+              ]
+            : []),
     ];
 
     return (
@@ -49,27 +62,42 @@ export default function Dashboard() {
 
             <div className="space-y-8">
                 <div>
-                    <h1 className="text-4xl font-bold">Student Queue Management System</h1>
-                    <p className="text-gray-600 mt-2">Welcome to the system dashboard</p>
+                    <h1 className="text-4xl font-bold">
+                        Student Queue Management System
+                    </h1>
+                    <p className="mt-2 text-gray-600">
+                        Welcome to the system dashboard
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
+
                         return (
                             <Link key={item.title} href={item.href}>
-                                <Card className="p-6 hover:shadow-lg transition h-full">
+                                <Card className="h-full p-6 transition hover:shadow-lg">
                                     <div className="flex items-start justify-between">
                                         <div>
-                                            <h3 className="text-lg font-semibold">{item.title}</h3>
-                                            <p className="text-gray-600 text-sm mt-1">{item.description}</p>
+                                            <h3 className="text-lg font-semibold">
+                                                {item.title}
+                                            </h3>
+                                            <p className="mt-1 text-sm text-gray-600">
+                                                {item.description}
+                                            </p>
                                         </div>
-                                        <div className={`p-3 rounded-lg ${item.color}`}>
-                                            <Icon className="w-6 h-6" />
+                                        <div
+                                            className={`rounded-lg p-3 ${item.color}`}
+                                        >
+                                            <Icon className="h-6 w-6" />
                                         </div>
                                     </div>
                                     <div className="mt-4">
-                                        <Button variant="outline" size="sm" className="w-full">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="w-full"
+                                        >
                                             Open
                                         </Button>
                                     </div>
@@ -79,24 +107,42 @@ export default function Dashboard() {
                     })}
                 </div>
 
-                <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200">
-                    <h2 className="text-lg font-semibold text-blue-900 mb-4">System Overview</h2>
-                    <div className="grid grid-cols-3 gap-6">
+                <Card className="border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
+                    <h2 className="mb-4 text-lg font-semibold text-blue-900">
+                        System Overview
+                    </h2>
+                    <div
+                        className={`grid gap-6 ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'}`}
+                    >
                         <div>
-                            <BarChart3 className="w-8 h-8 text-blue-600 mb-2" />
-                            <p className="text-sm text-blue-600 font-semibold">Manage Operations</p>
-                            <p className="text-xs text-blue-600 mt-1">Register, track, and manage students and queues</p>
+                            <BarChart3 className="mb-2 h-8 w-8 text-blue-600" />
+                            <p className="text-sm font-semibold text-blue-600">
+                                Manage Operations
+                            </p>
+                            <p className="mt-1 text-xs text-blue-600">
+                                Register, track, and manage students and queues
+                            </p>
                         </div>
                         <div>
-                            <FileText className="w-8 h-8 text-blue-600 mb-2" />
-                            <p className="text-sm text-blue-600 font-semibold">Generate Reports</p>
-                            <p className="text-xs text-blue-600 mt-1">Create detailed reports for analysis</p>
+                            <FileText className="mb-2 h-8 w-8 text-blue-600" />
+                            <p className="text-sm font-semibold text-blue-600">
+                                Generate Reports
+                            </p>
+                            <p className="mt-1 text-xs text-blue-600">
+                                Create detailed reports for analysis
+                            </p>
                         </div>
-                        <div>
-                            <Settings className="w-8 h-8 text-blue-600 mb-2" />
-                            <p className="text-sm text-blue-600 font-semibold">Admin Controls</p>
-                            <p className="text-xs text-blue-600 mt-1">Manage users and system settings</p>
-                        </div>
+                        {isAdmin && (
+                            <div>
+                                <Settings className="mb-2 h-8 w-8 text-blue-600" />
+                                <p className="text-sm font-semibold text-blue-600">
+                                    Admin Controls
+                                </p>
+                                <p className="mt-1 text-xs text-blue-600">
+                                    Manage users and system settings
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </Card>
             </div>
