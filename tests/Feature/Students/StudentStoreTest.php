@@ -18,7 +18,7 @@ class StudentStoreTest extends TestCase
         $response = $this->actingAs($user)->post(route('students.store'), [
             'first_name' => 'patrick',
             'last_name' => 'ADALID',
-            'email' => 'test1@gmail.com',
+            'student_number' => '123456',
             'phone' => '0219209102',
             'department' => 'BSIT',
             'program' => 'BSITEMC',
@@ -33,12 +33,9 @@ class StudentStoreTest extends TestCase
         $this->assertDatabaseHas('students', [
             'first_name' => 'patrick',
             'last_name' => 'ADALID',
-            'email' => 'test1@gmail.com',
+            'student_number' => '123456',
             'is_active' => true,
         ]);
-
-        $student = Student::firstWhere('email', 'test1@gmail.com');
-        $this->assertNotNull($student->student_number);
     }
 
     public function test_guests_cannot_register_a_student()
@@ -46,7 +43,7 @@ class StudentStoreTest extends TestCase
         $response = $this->post(route('students.store'), [
             'first_name' => 'patrick',
             'last_name' => 'ADALID',
-            'email' => 'test1@gmail.com',
+            'student_number' => '123456',
         ]);
 
         $response->assertRedirect(route('login'));
