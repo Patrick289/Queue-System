@@ -36,17 +36,26 @@ class QueueController extends Controller
     public function addStudent(Request $request, Queue $queue)
     {
         $validated = $request->validate([
-            'student_id' => 'required|exists:students,id',
+            'student_number' => ['required', 'string', 'regex:/^\d{6}$/'],
         ]);
+
+        $student = Student::query()
+            ->where('student_number', $validated['student_number'])
+            ->orWhere('student_number', 'like', '%-'.$validated['student_number'])
+            ->first();
+
+        if (! $student) {
+            return back()->withErrors(['student_number' => 'No student was found with this number.']);
+        }
 
         // Check if student is already in queue
         $existingPosition = QueuePosition::where('queue_id', $queue->id)
-            ->where('student_id', $validated['student_id'])
+            ->where('student_id', $student->id)
             ->whereIn('status', ['waiting', 'in_progress'])
             ->first();
 
         if ($existingPosition) {
-            return back()->withErrors(['student_id' => 'Student is already in this queue.']);
+            return back()->withErrors(['student_number' => 'Student is already in this queue.']);
         }
 
         $nextPosition = QueuePosition::where('queue_id', $queue->id)
@@ -54,7 +63,7 @@ class QueueController extends Controller
 
         QueuePosition::create([
             'queue_id' => $queue->id,
-            'student_id' => $validated['student_id'],
+            'student_id' => $student->id,
             'position' => $nextPosition,
             'status' => 'waiting',
             'joined_at' => now(),

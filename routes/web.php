@@ -12,8 +12,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 
     // Student routes
-    Route::resource('students', StudentController::class);
     Route::get('students/search', [StudentController::class, 'search'])->name('students.search');
+    Route::resource('students', StudentController::class);
 
     // Queue routes
     Route::resource('queues', QueueController::class)->only(['index', 'show']);

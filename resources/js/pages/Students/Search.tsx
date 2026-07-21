@@ -1,8 +1,8 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 interface Student {
     id: number;
@@ -16,18 +16,15 @@ interface Student {
 
 interface Props {
     results: Student[];
-    query: string;
+    query?: string;
 }
 
 export default function StudentSearch({ results, query }: Props) {
-    const [searchQuery, setSearchQuery] = useState(query);
-    const { post } = useForm({ q: searchQuery });
+    const [searchQuery, setSearchQuery] = useState(query ?? '');
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('students.search'), {
-            onSuccess: () => {},
-        });
+        router.get(route('students.search'), { q: searchQuery });
     };
 
     return (

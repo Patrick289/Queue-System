@@ -1,16 +1,16 @@
 import { Head, useForm } from '@inertiajs/react';
+import type { FormEventHandler } from 'react';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card } from '@/components/ui/card';
-import InputError from '@/components/input-error';
-import { FormEventHandler } from 'react';
 
 export default function StudentCreate() {
     const { data, setData, post, processing, errors } = useForm({
         first_name: '',
         last_name: '',
-        email: '',
+        student_number: '',
         phone: '',
         department: '',
         program: '',
@@ -40,7 +40,9 @@ export default function StudentCreate() {
                                     id="first_name"
                                     name="first_name"
                                     value={data.first_name}
-                                    onChange={(e) => setData('first_name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('first_name', e.target.value)
+                                    }
                                     placeholder="John"
                                     required
                                 />
@@ -53,7 +55,9 @@ export default function StudentCreate() {
                                     id="last_name"
                                     name="last_name"
                                     value={data.last_name}
-                                    onChange={(e) => setData('last_name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('last_name', e.target.value)
+                                    }
                                     placeholder="Doe"
                                     required
                                 />
@@ -63,17 +67,29 @@ export default function StudentCreate() {
 
                         <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <Label htmlFor="email">Email</Label>
+                                <Label htmlFor="student_number">
+                                    ID Number
+                                </Label>
                                 <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    placeholder="john@example.com"
+                                    id="student_number"
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]{6}"
+                                    maxLength={6}
+                                    name="student_number"
+                                    value={data.student_number}
+                                    onChange={(e) =>
+                                        setData(
+                                            'student_number',
+                                            e.target.value
+                                                .replace(/\D/g, '')
+                                                .slice(0, 6),
+                                        )
+                                    }
+                                    placeholder="000001"
                                     required
                                 />
-                                <InputError message={errors.email} />
+                                <InputError message={errors.student_number} />
                             </div>
 
                             <div>
@@ -83,7 +99,9 @@ export default function StudentCreate() {
                                     type="tel"
                                     name="phone"
                                     value={data.phone}
-                                    onChange={(e) => setData('phone', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('phone', e.target.value)
+                                    }
                                     placeholder="+1 (555) 000-0000"
                                 />
                                 <InputError message={errors.phone} />
@@ -97,7 +115,9 @@ export default function StudentCreate() {
                                     id="department"
                                     name="department"
                                     value={data.department}
-                                    onChange={(e) => setData('department', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('department', e.target.value)
+                                    }
                                     placeholder="Computer Science"
                                 />
                                 <InputError message={errors.department} />
@@ -109,7 +129,9 @@ export default function StudentCreate() {
                                     id="program"
                                     name="program"
                                     value={data.program}
-                                    onChange={(e) => setData('program', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('program', e.target.value)
+                                    }
                                     placeholder="Bachelor of Science"
                                 />
                                 <InputError message={errors.program} />
@@ -118,13 +140,17 @@ export default function StudentCreate() {
 
                         <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <Label htmlFor="date_of_birth">Date of Birth</Label>
+                                <Label htmlFor="date_of_birth">
+                                    Date of Birth
+                                </Label>
                                 <Input
                                     id="date_of_birth"
                                     type="date"
                                     name="date_of_birth"
                                     value={data.date_of_birth}
-                                    onChange={(e) => setData('date_of_birth', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('date_of_birth', e.target.value)
+                                    }
                                 />
                                 <InputError message={errors.date_of_birth} />
                             </div>
@@ -135,7 +161,9 @@ export default function StudentCreate() {
                                     id="gender"
                                     name="gender"
                                     value={data.gender}
-                                    onChange={(e) => setData('gender', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('gender', e.target.value)
+                                    }
                                     className="w-full rounded border border-gray-300 px-3 py-2"
                                 >
                                     <option value="">Select Gender</option>
@@ -153,7 +181,9 @@ export default function StudentCreate() {
                                 id="address"
                                 name="address"
                                 value={data.address}
-                                onChange={(e) => setData('address', e.target.value)}
+                                onChange={(e) =>
+                                    setData('address', e.target.value)
+                                }
                                 placeholder="Full Address"
                                 rows={4}
                                 className="w-full rounded border border-gray-300 px-3 py-2"
@@ -163,9 +193,14 @@ export default function StudentCreate() {
 
                         <div className="flex gap-4">
                             <Button type="submit" disabled={processing}>
-                                {processing ? 'Registering...' : 'Register Student'}
+                                {processing
+                                    ? 'Registering...'
+                                    : 'Register Student'}
                             </Button>
-                            <Button variant="outline" onClick={() => window.history.back()}>
+                            <Button
+                                variant="outline"
+                                onClick={() => window.history.back()}
+                            >
                                 Cancel
                             </Button>
                         </div>
